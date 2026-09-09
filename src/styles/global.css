@@ -1,0 +1,237 @@
+@font-face {
+    font-family: 'Material Symbols Rounded';
+    font-style: normal;
+    font-weight: 400;
+    src: url("/mdicons.woff2") format('woff2');
+}
+
+@font-face {
+    font-family: 'Google Sans Flex';
+    font-style: normal;
+    src: url("/GoogleSansFlex.ttf") format('truetype');
+}
+
+*[icon] {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1 !important;
+}
+
+:root {
+    display: block;
+    --cutout-top: env(safe-area-inset-top, 0);
+    --cutout-bottom: env(safe-area-inset-bottom, 0);
+    margin-top: var(--cutout-top);
+    margin-bottom: var(--cutout-bottom);
+}
+
+* {
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Google Sans Flex';
+}
+
+body {
+    width: 100svw !important;
+    background-color: black;
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+*[shimmer] {
+    background: linear-gradient(75deg,
+            #505050 25%,
+            #707070 50%,
+            #505050 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+    color: transparent !important;
+    border-radius: 16px;
+    user-select: none;
+    pointer-events: none;
+}
+
+*[shimmer] * {
+    color: transparent !important;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+[horizontal] {
+    display: flex;
+    flex-direction: row;
+}
+
+[vertical] {
+    display: flex;
+    flex-direction: column;
+}
+
+*[square] {
+    aspect-ratio: 1 !important;
+}
+
+div[pad] {
+    flex-grow: 1;
+}
+
+header {
+    display: flex;
+    gap: 12px;
+    padding: 10px 16px;
+    background-color: rgb(50, 50, 50);
+    position: sticky;
+    top: 0;
+
+    box-sizing: content-box;
+    padding-top: calc(var(--cutout-top) + 10px);
+    margin-top: calc(var(--cutout-top) * -1);
+}
+
+header button {
+    border-radius: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: xx-large;
+}
+
+header button:disabled {
+    color: gray;
+}
+
+#info {
+    width: 100%;
+    padding: 24px;
+    gap: 24px;
+}
+
+#infoTop {
+    height: 240px;
+    gap: 24px;
+}
+
+#coverDiv {
+    height: 100%;
+    aspect-ratio: 3/4 !important;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    border-radius: 16px;
+}
+
+#cover {
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+#writerDiv {
+    gap: 6px;
+}
+
+#title {
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+#authors {
+    font-size: medium;
+    flex-shrink: 0;
+    font-weight: bolder;
+}
+
+#descDiv {
+    background-color: rgb(50, 50, 50);
+    padding: 16px;
+    border-radius: 16px;
+}
+
+#status,
+#source {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#statusDiv,
+#sourceDiv {
+    align-items: center;
+}
+
+#searchManga {
+    width: 100%;
+    padding: 12px;
+    border-radius: 16px;
+    border: none;
+    background-color: #5f5f5f;
+    color: white;
+}
+
+#searchManga::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    display: none;
+}
+
+#searchBtn {
+    background-color: #c9c9c9;
+    color: black;
+    flex-shrink: 0;
+    aspect-ratio: 1 !important;
+}
+
+.mangaResultSource {
+    width: 100%;
+    padding: 0 16px;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.mangaResultEntry {
+    height: 200px;
+    background-color: #505050;
+    padding: 8px;
+    border-radius: 8px;
+    gap: 12px;
+}
+
+.mangaResultEntry .title {
+    font-size: x-large;
+}
+
+
+.mangaResultEntry .cover {
+    aspect-ratio: 3/4 !important;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.mangaResultEntry .cover img {
+    display: inline-flex;
+    flex-grow: 0;
+    flex-shrink: 0;
+    object-fit: contain;
+    aspect-ratio: 3/4 !important;
+}

@@ -17,7 +17,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    
+    "paths": {
+      "@global": ["./src/scripts/global/global"]
+    },
+
+    "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": ["src"],
 }

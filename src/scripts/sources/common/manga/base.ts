@@ -11,6 +11,12 @@ export interface SManga {
   thumbnail_url?: string;
 }
 
+export interface MangaSearchEntry {
+  id: string;
+  title: string;
+  thumbnail_url?: string;
+}
+
 export enum MangaStatus {
   UNKNOWN,
   ONGOING,
@@ -18,6 +24,15 @@ export enum MangaStatus {
   LICENSED,
   ON_HIATUS,
   CANCELLED,
+}
+
+export const MANGA_STATUS_S: Record<MangaStatus, string> = {
+  0: "Unknown",
+  1: "Ongoing",
+  2: "Completed",
+  3: "Licensed",
+  4: "On hiatus",
+  5: "Cancelled"
 }
 
 export interface SChapter {
@@ -44,4 +59,6 @@ export abstract class MangaSource extends Source {
   }
 
   abstract getMangaDetails(id: string): Promise<SManga>;
+
+  abstract searchMangas(query: string, page: number): Promise<MangaSearchEntry[]>
 }

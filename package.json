@@ -13,13 +13,16 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-http": "^2.6.0",
     "@tauri-apps/plugin-opener": "^2",
+    "@tauri-apps/plugin-shell": "^2.3.6",
     "cheerio": "^1.2.0",
     "ufo": "^1.6.4",
     "wrangler": "^4.129.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
+    "@types/node": "^26.5.0",
     "typescript": "~6.0.3",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "vite-plugin-singlefile": "^2.3.3"
   }
 }

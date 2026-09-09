@@ -12,6 +12,11 @@ export enum Languages {
   EN,
 }
 
+export const LANGUAGES_S: Record<Languages, string> = {
+  0: "All",
+  1: "En",
+};
+
 export type DocData = cheerio.CheerioAPI & { url: string };
 
 export abstract class Source {
@@ -121,6 +126,37 @@ export abstract class Source {
         `[${this.name}] ERR_NOT_INITIALIZED: Call await .init() first.`,
       );
     }
+    return this.activeSources[0];
+  }
+
+  public async getActiveSource(): Promise<string> {
+    await this.init();
+
+    const currentUrl = this.activeSources[0];
+    const t0 = performance.now();
+
+    try {
+      const res = await fetch(currentUrl, {
+        method: "GET",
+        headers: this.headers(),
+      });
+
+      const ms = performance.now() - t0;
+
+      if (res.ok) {
+        this.formatLog("INFO", "CHECK", res.status, ms, currentUrl);
+        return currentUrl;
+      }
+
+      this.formatLog("WARN", "CHECK", res.status, ms, currentUrl);
+    } catch (err) {
+      const ms = performance.now() - t0;
+      const code = this.getErrorCode(err);
+      this.formatLog("ERR", "CHECK", code, ms, currentUrl, err);
+    }
+
+    this.initPromise = null;
+    await this.init();
     return this.activeSources[0];
   }
 
