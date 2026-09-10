@@ -2,6 +2,7 @@ import "@global"
 import { MangaSource } from "../../scripts/sources/common/manga/base"
 import { KaliScanSource } from "../../scripts/sources/en/kaliscan.com/source"
 import { parseQuery, parseURL } from "ufo"
+import { replaceImageWithWebGPUCanvas } from "../../scripts/global/images"
 
 const mSources: Record<string, MangaSource> = {
     kaliscan: new KaliScanSource()
@@ -36,16 +37,21 @@ src.getChapterData(mangaID, chapID).then((chap) => {
     }
 
     chap.images.forEach(url => {
-        const img = document.createElement("img")
-        img.src = url
-        img.setAttribute("shimmer", "")
-        img.classList.add("chapterImage", "loading")
-        img.onload = () => {
-            img.classList.remove("loading")
-            img.removeAttribute("shimmer")
-        }
+        const imgDiv = document.createElement("div")
+        imgDiv.classList.add("chapterImageDiv", "loading")
+        imgDiv.setAttribute("shimmer", "")
 
-        document.body.appendChild(img)
+        const img = document.createElement("img")
+        //img.crossOrigin = "anonymous"
+        img.src = url
+        img.classList.add("chapterImage")
+        img.decode().then(() => {
+            imgDiv.classList.remove("loading")
+            imgDiv.removeAttribute("shimmer")
+        })
+
+        imgDiv.appendChild(img)
+        document.body.appendChild(imgDiv)
     })
 
 

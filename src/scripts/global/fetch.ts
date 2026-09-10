@@ -12,14 +12,36 @@ const isTauriInternalUrl = (url: string) =>
 
 const nativeFetch = window.fetch;
 
+// Helper to reliably extract request options from Request | string | URL
+async function parseRequestInput(input: RequestInfo | URL, init?: RequestInit) {
+  let url = typeof input === "string"
+    ? input
+    : input instanceof URL
+      ? input.toString()
+      : input.url;
+
+  let method = init?.method;
+  let headers = new Headers(init?.headers);
+  let body = init?.body;
+
+  if (input instanceof Request) {
+    method = method || input.method;
+    if (!init?.headers) {
+      input.headers.forEach((val, key) => {
+        if (!headers.has(key)) headers.append(key, val);
+      });
+    }
+    if (!body && input.method !== "GET" && input.method !== "HEAD") {
+      body = await input.arrayBuffer(); // Buffer stream into ArrayBuffer for tauriFetch
+    }
+  }
+
+  return { url, method: method || "GET", headers, body };
+}
+
 if (isTauri()) {
   window.fetch = async (input, init) => {
-    const url =
-      typeof input === "string"
-        ? input
-        : input instanceof Request
-          ? input.url
-          : input.toString();
+    const { url, method, headers, body } = await parseRequestInput(input, init);
 
     if (isTauriInternalUrl(url) || isLocalDevUrl(url)) {
       return nativeFetch(input, init);
@@ -27,17 +49,17 @@ if (isTauri()) {
 
     if (url.startsWith("http://") || url.startsWith("https://")) {
       try {
-        let options = init;
+        // Convert Headers instance to plain record for plugin compatibility
+        const headersRecord: Record<string, string> = {};
+        headers.forEach((value, key) => {
+          headersRecord[key] = value;
+        });
 
-        if (input instanceof Request && !init) {
-          options = {
-            method: input.method,
-            headers: input.headers,
-            body: input.body,
-          };
-        }
-
-        return await tauriFetch(url, options);
+        return await tauriFetch(url, {
+          method,
+          headers: headersRecord,
+          body: body as BodyInit | null | undefined,
+        });
       } catch (err) {
         console.error("[Tauri Fetch Error]:", err, "Fallback to native for URL:", url);
         return nativeFetch(input, init);
@@ -48,33 +70,25 @@ if (isTauri()) {
   };
 } else {
   window.fetch = async (input, init) => {
-    let targetUrl: string;
-
-    if (typeof input === "string") {
-      targetUrl = input;
-    } else if (input instanceof Request) {
-      targetUrl = input.url;
-    } else {
-      targetUrl = input.toString();
-    }
+    const { url } = await parseRequestInput(input, init);
 
     if (
-      (targetUrl.startsWith("http://") || targetUrl.startsWith("https://")) &&
-      !targetUrl.startsWith(CLOUDFLARE_PROXY_URL) &&
-      !isLocalDevUrl(targetUrl)
+      (url.startsWith("http://") || url.startsWith("https://")) &&
+      !url.startsWith(CLOUDFLARE_PROXY_URL) &&
+      !isLocalDevUrl(url)
     ) {
-      const proxiedUrl = `${CLOUDFLARE_PROXY_URL}/?url=${encodeURIComponent(targetUrl)}`;
+      const proxiedUrl = `${CLOUDFLARE_PROXY_URL}/?url=${encodeURIComponent(url)}`;
 
-      let response: Response;
+      // Construct fresh request options to prevent mode/origin header leakage
+      const proxyInit: RequestInit = {
+        ...init,
+        method: input instanceof Request ? input.method : init?.method || "GET",
+      };
 
-      if (input instanceof Request) {
-        response = await nativeFetch(new Request(proxiedUrl, input), init);
-      } else {
-        response = await nativeFetch(proxiedUrl, init);
-      }
+      const response = await nativeFetch(proxiedUrl, proxyInit);
 
       Object.defineProperty(response, "url", {
-        value: targetUrl,
+        value: url,
         writable: false,
         configurable: true,
         enumerable: true,

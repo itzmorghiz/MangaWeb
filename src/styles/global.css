@@ -31,12 +31,11 @@
 }
 
 :root {
-    display: block;
-    --cutout-top: max(env(safe-area-inset-top, 16px), 16px);
-    --cutout-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
-    margin-top: var(--cutout-top);
-    margin-bottom: var(--cutout-bottom);
-    overflow-x: hidden;
+    --cutout-top: max(env(safe-area-inset-top, 0), 16px);
+    --cutout-bottom: max(env(safe-area-inset-bottom, 0), 16px);
+    padding-top: var(--cutout-top);
+    padding-bottom: var(--cutout-bottom);
+
 }
 
 * {
@@ -46,11 +45,9 @@
 }
 
 body {
-    width: 100svw !important;
     background-color: black;
     padding: 0;
     margin: 0;
-    display: block;
     overflow-x: hidden;
 }
 
@@ -254,6 +251,22 @@ header button:disabled {
     font-weight: bolder;
 }
 
+.chapterImageDiv {
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+    border-radius: 0;
+    margin: 0 auto;
+}
+
+.chapterImageDiv.loading {
+    height: 100svh;
+}
+
+.chapterImageDiv.loading .chapterImage {
+    transform: translateX(-100%);
+}
+
 .chapterImage {
     width: 100% !important;
     display: block;
@@ -261,16 +274,14 @@ header button:disabled {
     padding: 0;
 }
 
-.chapterImage loading {
-    min-height: 100svh !important;
+body:has(#prevChapBtn) .chapterImageDiv:first-of-type {
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
 }
 
-body:has(#prevChapBtn) .chapterImage:first-of-type {
-    border-radius: 24px 24px 0 0;
-}
-
-body:has(#nextChapBtn) .chapterImage:last-of-type {
-    border-radius: 0 0 24px 24px;
+body:has(#nextChapBtn) .chapterImageDiv:last-of-type {
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
 }
 
 #prevChapBtn {
@@ -284,6 +295,8 @@ body:has(#nextChapBtn) .chapterImage:last-of-type {
     margin-top: 0;
     border-radius: 24px;
     background-color: #505050;
+
+    box-sizing: border-box;
 }
 
 #nextChapBtn {

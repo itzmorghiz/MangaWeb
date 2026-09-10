@@ -30,12 +30,12 @@ export abstract class Source {
   protected activeSources: string[] = [];
   private initPromise: Promise<void> | null = null;
 
-  protected headers(): Record<string, string> {
+  // Genera gli header base senza creare cicli infiniti
+  protected getBaseHeaders(refererUrl?: string): Record<string, string> {
     return {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-      Accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      ...(refererUrl ? { Referer: refererUrl } : {}),
     };
   }
 
@@ -93,7 +93,7 @@ export abstract class Source {
       try {
         const res = await fetch(baseUrl, {
           method: "GET",
-          headers: this.headers(),
+          headers: this.getBaseHeaders(baseUrl),
         });
 
         const ms = performance.now() - t0;
@@ -115,6 +115,8 @@ export abstract class Source {
       }
     }
 
+    // Resettiamo initPromise in caso di fallimento totale per permettere ri-tentativi futuri
+    this.initPromise = null;
     throw new Error(
       `[${this.name}] INIT_FAILED: No reachable domain in [${this.sources.join(", ")}]`,
     );
@@ -131,33 +133,7 @@ export abstract class Source {
 
   public async getActiveSource(): Promise<string> {
     await this.init();
-
-    const currentUrl = this.activeSources[0];
-    const t0 = performance.now();
-
-    try {
-      const res = await fetch(currentUrl, {
-        method: "GET",
-        headers: this.headers(),
-      });
-
-      const ms = performance.now() - t0;
-
-      if (res.ok) {
-        this.formatLog("INFO", "CHECK", res.status, ms, currentUrl);
-        return currentUrl;
-      }
-
-      this.formatLog("WARN", "CHECK", res.status, ms, currentUrl);
-    } catch (err) {
-      const ms = performance.now() - t0;
-      const code = this.getErrorCode(err);
-      this.formatLog("ERR", "CHECK", code, ms, currentUrl, err);
-    }
-
-    this.initPromise = null;
-    await this.init();
-    return this.activeSources[0];
+    return this.primarySource;
   }
 
   protected async fetchWithFallback(
@@ -177,7 +153,7 @@ export abstract class Source {
         const response = await fetch(targetUrl, {
           method: "GET",
           headers: {
-            ...this.headers(),
+            ...this.getBaseHeaders(baseUrl),
             ...customHeaders,
           },
         });
@@ -225,7 +201,6 @@ export abstract class Source {
     }
 
     const html = await res.text();
-    console.log(html)
     const $ = cheerio.load(html) as DocData;
     $.url = res.url;
 

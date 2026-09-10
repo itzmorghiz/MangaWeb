@@ -3,27 +3,32 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM"],
+    "lib": [
+      "ES2020"
+    ],
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    
     "paths": {
-      "@global": ["./src/scripts/global/global"]
+      "@global": [
+        "./src/scripts/global/global"
+      ]
     },
-
-    "types": ["vite/client"]
+    "types": [
+      "vite/client",
+      "@types/web"
+    ]
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
 }
