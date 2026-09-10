@@ -2,7 +2,6 @@ import "@global"
 import { MangaSource } from "../../scripts/sources/common/manga/base"
 import { KaliScanSource } from "../../scripts/sources/en/kaliscan.com/source"
 import { parseQuery, parseURL } from "ufo"
-import { replaceImageWithWebGPUCanvas } from "../../scripts/global/images"
 
 const mSources: Record<string, MangaSource> = {
     kaliscan: new KaliScanSource()
