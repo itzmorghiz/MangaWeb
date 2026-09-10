@@ -32,10 +32,11 @@
 
 :root {
     display: block;
-    --cutout-top: env(safe-area-inset-top, 0);
-    --cutout-bottom: env(safe-area-inset-bottom, 0);
+    --cutout-top: max(env(safe-area-inset-top, 16px), 16px);
+    --cutout-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
     margin-top: var(--cutout-top);
     margin-bottom: var(--cutout-bottom);
+    overflow-x: hidden;
 }
 
 * {
@@ -50,6 +51,7 @@ body {
     padding: 0;
     margin: 0;
     display: block;
+    overflow-x: hidden;
 }
 
 *[shimmer] {
@@ -60,6 +62,7 @@ body {
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite linear;
     color: transparent !important;
+    text-decoration: none !important;
     border-radius: 16px;
     user-select: none;
     pointer-events: none;
@@ -67,6 +70,7 @@ body {
 
 *[shimmer] * {
     color: transparent !important;
+    text-decoration: none !important;
 }
 
 @keyframes shimmer {
@@ -234,4 +238,63 @@ header button:disabled {
     flex-shrink: 0;
     object-fit: contain;
     aspect-ratio: 3/4 !important;
+}
+
+.chapterList {
+    gap: 8px;
+    margin: 0 16px;
+}
+
+.chapterEntry {
+    padding: 8px;
+}
+
+.chapterEntry .name {
+    font-size: large;
+    font-weight: bolder;
+}
+
+.chapterImage {
+    width: 100% !important;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.chapterImage loading {
+    min-height: 100%;
+}
+
+body:has(#prevChapBtn) .chapterImage:first-of-type {
+    border-radius: 24px 24px 0 0;
+}
+
+body:has(#nextChapBtn) .chapterImage:last-of-type {
+    border-radius: 0 0 24px 24px;
+}
+
+#prevChapBtn {
+    padding: 40px 0;
+    display: block;
+    text-align: center;
+    font-size: x-large;
+    text-decoration: none !important;
+
+    margin: 24px;
+    margin-top: 0;
+    border-radius: 24px;
+    background-color: #505050;
+}
+
+#nextChapBtn {
+    padding: 60px 0;
+    display: block;
+    text-align: center;
+    font-size: x-large;
+    text-decoration: none !important;
+
+    margin: 24px;
+    margin-bottom: 0;
+    border-radius: 24px;
+    background-color: #505050;
 }

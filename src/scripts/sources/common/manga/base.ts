@@ -38,8 +38,17 @@ export const MANGA_STATUS_S: Record<MangaStatus, string> = {
 export interface SChapter {
   url: string;
   name: string;
-  date_upload: number;
+  images: string[]
+  next_id?: string
+  prev_id?: string
+  date_upload?: number;
   chapter_number?: number;
+}
+
+export interface ChapterEntry {
+  id: string;
+  name: string;
+  date_upload?: number;
 }
 
 export interface Page {
@@ -61,4 +70,8 @@ export abstract class MangaSource extends Source {
   abstract getMangaDetails(id: string): Promise<SManga>;
 
   abstract searchMangas(query: string, page: number): Promise<MangaSearchEntry[]>
+
+  abstract getChapters(id: string): Promise<ChapterEntry[]>
+
+  abstract getChapterData(id: string, chapter: string): Promise<SChapter>
 }

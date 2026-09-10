@@ -91,3 +91,18 @@ src.getMangaDetails(mangaID).then(manga => {
     statusDiv.innerHTML = `<span icon>${statusToIcon[status]}</span>${MANGA_STATUS_S[status]}`
     removeShimmer(statusDiv.parentElement!)
 })
+
+src.getChapters(mangaID).then(chapterList => {
+    const chapterListDiv = document.getElementById("chapterList")!
+    chapterListDiv.innerHTML = ""
+
+    chapterList.forEach(chap => {
+        chapterListDiv.innerHTML += `
+        <a href= "/manga/read/?source=${sourceID}&id=${mangaID}&chap=${chap.id}">
+            <div class="chapterEntry" horizontal>
+                <div class="name">${chap.name}</div>
+            </div>
+        </a>
+        `
+    })
+})

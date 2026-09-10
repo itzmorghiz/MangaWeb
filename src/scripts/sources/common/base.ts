@@ -225,6 +225,7 @@ export abstract class Source {
     }
 
     const html = await res.text();
+    console.log(html)
     const $ = cheerio.load(html) as DocData;
     $.url = res.url;
 
