@@ -262,7 +262,7 @@ header button:disabled {
 }
 
 .chapterImage loading {
-    min-height: 100%;
+    min-height: 100svh !important;
 }
 
 body:has(#prevChapBtn) .chapterImage:first-of-type {
